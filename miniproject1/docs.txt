@@ -1,3 +1,24 @@
+# Group 2
+# Crisostomo, Alessandro
+# Ramos, Gab
+# Senatin, Christopher
+
+We made a filter that changes depending on how many fingers you are raising up.
+Each filter number corresponds to the number of fingers to be raised.
+Filter 1 - Resizes image to half its dimensions
+Filter 2 - Rotate image to 180 degrees
+Filter 3 - Gaussian Blur
+Filter 4 - BGR (not rgb)
+Filter 5 - Black and White
+
+We used opencv, tkinter (User Interface), tkmacosx (tkinter design for macos users), and mediapipe (hand detection)
+We read up on mediapipe to learn how to use it in detecting hands.
+
+The code is documented on how fingers are considered raised.
+
+The code/algorithm for the fingers raised is not perfect as it is exploitable.
+
+You can try, and make sure to download the appropriate libraries indicated in requirements.txt.
 
 Hand detection was learned from these documentations using mediapipe.
 https://mediapipe.readthedocs.io/en/latest/solutions/hands.html
