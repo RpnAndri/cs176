@@ -74,13 +74,14 @@ def update():
     if running:
         ret, frame = cap.read()
         if ret:
+            
             # Resize to the tkinter frame
             frame = cv2.resize(frame, (WIDTH, HEIGHT))
-
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
             results = hands.process(frame)
 
+            fingers_text = "Try holding up your fingers to the camera and see what happens!"
             if results.multi_hand_landmarks:
                 for hand_landmarks in results.multi_hand_landmarks:
                     # Draw the detected fingers on the frame
@@ -98,22 +99,22 @@ def update():
 
                     match fingers:
                         case 1:
-                            print(1)
+                            fingers_text = "ONE finger raised"
                         case 2:
-                            print(2)
+                            fingers_text = "TWO fingers raised"
                         case 3:
-                            print(3)
+                            fingers_text = "THREE fingers raised"
                         case 4:
-                            print(4)
+                            fingers_text = "FOUR fingers raised"
                         case 5:
-                            print(5)
+                            fingers_text = "FIVE fingers raised"
                         case _:
-                            print(0)
+                            fingers_text = "ZERO fingers raised"
 
-            else:
-                print(0)
+            # Display number of fingers raised
+            finger_text.config(text=fingers_text)
                         
-
+            
             img = Image.fromarray(frame)
             imgtk = ImageTk.PhotoImage(image=img)
             video_label.imgtk = imgtk
@@ -127,14 +128,20 @@ root.title("Group 2 - Mini Project")
 root.geometry("640x520")
 root.configure(bg=CYND_BODY)
 
-BD = 5
+title_text = tk.Label(root, text="Finger-command Filter", bg=CYND_BODY, fg=CYND_BELLY, font=("Monsterrat", 24, "bold"))
+title_text.pack(pady=10)
 
+BD = 5
 # Video Frame
 video_frame = tk.Frame(root, width=WIDTH, height=HEIGHT, bg=CYND_BODY, bd=BD, relief="solid")
 video_frame.pack(pady=10)
 
 video_label = tk.Label(video_frame, bg=CYND_RED)
 video_label.place(x=0, y=0, width=WIDTH-(BD*2), height=HEIGHT-(BD*2))
+
+# Finger Counter
+finger_text = tk.Label(root, text="Click start to open the camera!", bg=CYND_BODY, fg=CYND_BELLY)
+finger_text.pack(pady=10)
 
 btn = Button(
     root,
