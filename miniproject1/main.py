@@ -62,7 +62,6 @@ def count_fingers(hand_landmarks, hand) -> int:
 
 
 # OpenCV
-btn_text = "Start"
 def start():
     global cap, running
     if not running:
@@ -165,9 +164,18 @@ video_label.place(x=0, y=0, width=WIDTH-(BD*2), height=HEIGHT-(BD*2))
 finger_text = tk.Label(root, text="Click start to open the camera!", bg=CYND_BODY, fg=CYND_BELLY)
 finger_text.pack(pady=10)
 
+# Image
+icon = Image.open("./pokemon.png")
+icon = icon.resize((30, 30))
+icon = ImageTk.PhotoImage(icon)
+
+# Button
 btn = Button(
     root,
-    text=btn_text,
+    text="Start",
+    image=icon,
+    compound="left",
+    font=("Monsterrat", 14, "bold"),
     command=start,
     bg=CYND_BELLY,
     padx=20,
