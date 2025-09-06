@@ -31,7 +31,7 @@ hands = mp_hands.Hands(
 # Main Color 
 CYND_BODY = "#306B84"
 CYND_BELLY = "#FFF7A5"
-CYND_RED = "#FF3701"
+CYND_RED = "#FF5A00"
 
 # These numbers are seen in the documentation for the fingers' corresponding index
 finger_tips = [8, 12, 16, 20]   # Index, Middle, Ring, Pinky
@@ -62,12 +62,15 @@ def count_fingers(hand_landmarks, hand) -> int:
 
 
 # OpenCV
+btn_text = "Start"
 def start():
     global cap, running
     if not running:
         cap = cv2.VideoCapture(0)   # 0 for Webcam
         running = True
         update()
+    btn.config(text="Stop", command=stop)
+    
 
 def update():
     global cap, running
@@ -100,14 +103,24 @@ def update():
                     match fingers:
                         case 1:
                             fingers_text = "ONE finger raised"
+                            # Filter 1 - Resizes image to half its dimensions
+                            frame = cv2.resize(frame, (WIDTH//2, HEIGHT//2))
                         case 2:
                             fingers_text = "TWO fingers raised"
+                            # Filter 2 - Rotate image to 180 degrees
+                            frame = cv2.rotate(frame, cv2.ROTATE_180)
                         case 3:
                             fingers_text = "THREE fingers raised"
+                            # Filter 3 - Gaussian Blur
+                            frame = cv2.GaussianBlur(frame, (51, 51), 0)
                         case 4:
                             fingers_text = "FOUR fingers raised"
+                            # Filter 4 - BGR (not rgb)
+                            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
                         case 5:
                             fingers_text = "FIVE fingers raised"
+                            # Filter 5 - Black and White
+                            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
                         case _:
                             fingers_text = "ZERO fingers raised"
 
@@ -121,6 +134,15 @@ def update():
             video_label.configure(image=imgtk)
         video_label.after(10, update)
 
+def stop():
+    global cap, running
+    running = False
+    if cap and cap.isOpened():
+        cap.release()
+
+    btn.config(text="Start", command=start)
+    video_label.config(image="", bg=CYND_RED)
+    video_label.imgtk = None
 
 # Tkinter
 root = tk.Tk()
@@ -145,7 +167,7 @@ finger_text.pack(pady=10)
 
 btn = Button(
     root,
-    text="Start",
+    text=btn_text,
     command=start,
     bg=CYND_BELLY,
     padx=20,
