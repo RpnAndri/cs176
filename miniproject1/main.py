@@ -22,7 +22,8 @@ mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(
     model_complexity=0,
     min_detection_confidence=0.5,
-    min_tracking_confidence=0.5
+    min_tracking_confidence=0.5,
+    max_num_hands = 1,
 )
 
 
@@ -32,11 +33,32 @@ CYND_BODY = "#306B84"
 CYND_BELLY = "#FFF7A5"
 CYND_RED = "#FF3701"
 
+# These numbers are seen in the documentation for the fingers' corresponding index
+finger_tips = [8, 12, 16, 20]   # Index, Middle, Ring, Pinky
+finger_joints = [6, 10, 14, 18] # Index, Middle, Ring, Pinky
+
 # Count the number of fingers given the landmarks
-def count_fingers(hand_landmarks) -> int:
-    print(hand_landmarks)
-    print("\n\n\n\n")
-    return 1
+def count_fingers(hand_landmarks, hand) -> int:
+    # Simple counting algorithm
+    # Not bullet-proof, exploitable if you bend your wrist
+    # To be open, the tips must have a higher y value than the joints
+    # The thumb is the same for the x-value, depends on left or right
+
+    raised_fingers = 0
+
+    # Tall fingers first
+    for i in range(len(finger_tips)):
+        if hand_landmarks.landmark[finger_tips[i]].y < hand_landmarks.landmark[finger_joints[i]].y:
+            raised_fingers += 1
+
+    # Thumb checker
+    if hand == "Right" and hand_landmarks.landmark[4].x < hand_landmarks.landmark[2].x:
+        raised_fingers += 1
+    elif hand == "Left" and hand_landmarks.landmark[4].x > hand_landmarks.landmark[2].x:
+        raised_fingers += 1
+
+
+    return raised_fingers
 
 
 # OpenCV
@@ -70,7 +92,9 @@ def update():
                         mp_drawing_styles.get_default_hand_connections_style(),
                     )
 
-                    fingers = count_fingers(hand_landmarks)
+                for hand in results.multi_handedness:
+                    # Gets if left or right
+                    fingers = count_fingers(hand_landmarks, hand.classification[0].label)
 
                     match fingers:
                         case 1:
@@ -83,6 +107,12 @@ def update():
                             print(4)
                         case 5:
                             print(5)
+                        case _:
+                            print(0)
+
+            else:
+                print(0)
+                        
 
             img = Image.fromarray(frame)
             imgtk = ImageTk.PhotoImage(image=img)

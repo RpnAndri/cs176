@@ -1,3 +1,6 @@
 
-Hand detection was learned from these documentations.
+Hand detection was learned from these documentations using mediapipe.
 https://mediapipe.readthedocs.io/en/latest/solutions/hands.html
+
+Detect left or right hands in mediapipe.
+https://toptechboy.com/distinguish-between-right-and-left-hands-in-mediapipe/
