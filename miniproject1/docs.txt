@@ -1,0 +1,3 @@
+
+Hand detection was learned from these documentations.
+https://mediapipe.readthedocs.io/en/latest/solutions/hands.html
